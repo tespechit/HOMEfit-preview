@@ -1,0 +1,6 @@
+{
+  "name": "HomeFit - Home Workouts & Fitness Tracker",
+  "description": "Responsive home workout web app with bodyweight exercises, customized routines, audio-guided interval timer, calendar streaks, and weight tracking without gym equipment.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
