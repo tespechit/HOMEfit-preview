@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Play, AlertCircle, CheckCircle2, Lightbulb, Dumbbell } from 'lucide-react';
 import { Exercise } from '../types';
 import { ExerciseIllustration } from './ExerciseIllustration';
+import { ExerciseMedia } from './ExerciseMedia';
 
 interface ExerciseModalProps {
   exercise: Exercise | null;
@@ -54,12 +55,22 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
 
         {/* Scrollable body */}
         <div className="p-5 overflow-y-auto space-y-5">
-          {/* Visual animation illustration */}
-          <ExerciseIllustration
-            type={exercise.animationType || 'squat'}
-            icon={exercise.icon}
-            className="w-full h-48"
-          />
+          {/* Real-person video from Free Exercise DB, with the original illustration as fallback */}
+          {exercise.freeExercise ? (
+            <ExerciseMedia media={exercise.freeExercise} className="w-full aspect-video" />
+          ) : (
+            <ExerciseIllustration
+              type={exercise.animationType || 'squat'}
+              icon={exercise.icon}
+              className="w-full h-48"
+            />
+          )}
+
+          {exercise.freeExercise?.shortDescription && (
+            <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-300">
+              {exercise.freeExercise.shortDescription}
+            </p>
+          )}
 
           {/* Quick specs pills */}
           <div className="grid grid-cols-3 gap-2">
@@ -127,6 +138,31 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {exercise.freeExercise?.formCues.length ? (
+            <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-900 dark:text-blue-200">
+              <h3 className="text-xs font-bold uppercase tracking-wider mb-2 text-blue-700 dark:text-blue-400">
+                Form Cues
+              </h3>
+              <ul className="space-y-1.5 text-xs">
+                {exercise.freeExercise.formCues.map(cue => (
+                  <li key={cue} className="flex gap-1.5">
+                    <span className="text-blue-500 font-bold">•</span>
+                    <span>{cue}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {exercise.freeExercise?.breathing && (
+            <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-900 dark:text-cyan-200">
+              <h3 className="text-xs font-bold uppercase tracking-wider mb-1 text-cyan-700 dark:text-cyan-400">
+                Breathing
+              </h3>
+              <p className="text-xs leading-relaxed">{exercise.freeExercise.breathing}</p>
             </div>
           )}
 

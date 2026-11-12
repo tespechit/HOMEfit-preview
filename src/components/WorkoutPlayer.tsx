@@ -22,6 +22,7 @@ import { Workout, Exercise, WorkoutLog } from '../types';
 import { EXERCISES_BY_ID } from '../data/exercises';
 import { useWorkoutTimer } from '../hooks/useWorkoutTimer';
 import { ExerciseIllustration } from './ExerciseIllustration';
+import { ExerciseMedia } from './ExerciseMedia';
 import { estimateCaloriesBurned, formatTime, getTodayString } from '../utils/fitness';
 
 interface WorkoutPlayerProps {
@@ -392,12 +393,16 @@ export const WorkoutPlayer: React.FC<WorkoutPlayerProps> = ({
         {/* Small Exercise Illustration Preview during active work */}
         {phase === 'work' && currentEx && (
           <div className="hidden sm:block w-full">
-            <ExerciseIllustration
-              type={currentEx.animationType}
-              isPaused={isPaused}
-              icon={currentEx.icon}
-              className="w-full h-28"
-            />
+            {currentEx.freeExercise ? (
+              <ExerciseMedia media={currentEx.freeExercise} compact className="w-full h-32" />
+            ) : (
+              <ExerciseIllustration
+                type={currentEx.animationType}
+                isPaused={isPaused}
+                icon={currentEx.icon}
+                className="w-full h-28"
+              />
+            )}
           </div>
         )}
       </div>

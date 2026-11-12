@@ -1,4 +1,5 @@
 import { Exercise } from '../types';
+import { getFreeExerciseMedia } from './freeExerciseDb';
 
 export const EXERCISES: Exercise[] = [
   // --- FULL BODY (7) ---
@@ -1174,5 +1175,15 @@ export const CATEGORIES = [
   'Cardio/HIIT',
   'Stretching/Yoga',
 ] as const;
+
+EXERCISES.forEach(exercise => {
+  exercise.freeExercise = getFreeExerciseMedia(exercise);
+  if (exercise.freeExercise?.steps.length) {
+    exercise.instructions = exercise.freeExercise.steps;
+  }
+  if (exercise.freeExercise?.secondaryMuscles.length) {
+    exercise.targetMuscles = [...new Set([...exercise.targetMuscles, ...exercise.freeExercise.secondaryMuscles])];
+  }
+});
 
 export const EXERCISES_BY_ID = new Map(EXERCISES.map(e => [e.id, e]));

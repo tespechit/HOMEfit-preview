@@ -10,6 +10,24 @@ export type DifficultyLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export type EquipmentType = 'None' | 'Dumbbells' | 'Resistance Bands' | 'Chair/Wall';
 
+export interface FreeExerciseMedia {
+  id: string;
+  shortDescription: string;
+  secondaryMuscles: string[];
+  sourceName: string;
+  steps: string[];
+  formCues: string[];
+  breathing: string;
+  videos: {
+    male?: string;
+    female?: string;
+  };
+  thumbnails: {
+    male?: string;
+    female?: string;
+  };
+}
+
 export interface Exercise {
   id: string;
   name: string;
@@ -25,6 +43,7 @@ export interface Exercise {
   proTip: string;
   icon: string; // emoji or visual cue
   animationType?: 'squat' | 'pushup' | 'lunge' | 'jumping_jack' | 'plank' | 'burpee' | 'crunch' | 'stretch' | 'cardio';
+  freeExercise?: FreeExerciseMedia;
 }
 
 export interface WorkoutExerciseItem {
