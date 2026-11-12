@@ -15,6 +15,7 @@ import { UserProfile, Workout, WorkoutLog, ActiveProgramState } from '../../type
 import { MOTIVATIONAL_QUOTES } from '../../data/quotes';
 import { PROGRAMS_BY_ID } from '../../data/programs';
 import { calculateWeeklyProgress, formatTime } from '../../utils/fitness';
+import { useLanguage } from '../../i18n';
 
 interface HomeViewProps {
   profile: UserProfile;
@@ -35,6 +36,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onNavigateTab,
   onSelectProgramDay,
 }) => {
+  const { tx } = useLanguage();
   const [quoteIndex, setQuoteIndex] = React.useState(0);
   const currentQuote = MOTIVATIONAL_QUOTES[quoteIndex % MOTIVATIONAL_QUOTES.length];
 
@@ -216,18 +218,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 dark:text-orange-400">
-              Daily Motivation
+              {tx('Daily Motivation')}
             </span>
             <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 italic leading-snug">
-              "{currentQuote.quote}"
+              "{tx(currentQuote.quote)}"
             </p>
             <span className="text-xs text-zinc-600 dark:text-zinc-300 font-medium block">
-              — {currentQuote.author}
+              — {tx(currentQuote.author)}
             </span>
           </div>
           <button
             onClick={cycleQuote}
-            aria-label="New motivational quote"
+            aria-label={tx('New motivational quote')}
             className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-100/50 dark:hover:bg-zinc-800 transition-colors shrink-0"
           >
             <RefreshCw className="w-4 h-4" />
@@ -241,7 +243,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="p-4 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">
-              Workout Streak
+              {tx('Workout Streak')}
             </span>
             <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
               <Flame className={`w-4 h-4 ${streak > 0 ? 'fill-current' : ''}`} />
@@ -252,10 +254,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <span className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
                 {streak}
               </span>
-              <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300">days</span>
+              <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300">{tx('days')}</span>
             </div>
             <p className="text-[11px] text-zinc-600 dark:text-zinc-300 mt-1">
-              {streak > 0 ? 'Keep the momentum going!' : 'Complete a workout to start!'}
+              {streak > 0 ? tx('Keep the momentum going!') : tx('Complete a workout to start!')}
             </p>
           </div>
         </div>
@@ -264,7 +266,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="p-4 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">
-              Weekly Goal
+              {tx('Weekly Goal')}
             </span>
             <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <Award className="w-4 h-4" />
@@ -281,7 +283,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-zinc-600 dark:text-zinc-300 mt-1">
-                {weekly.isCompleted ? 'Goal achieved! 🔥' : `${weekly.target - weekly.count} more to hit goal`}
+                {weekly.isCompleted ? tx('Goal achieved! 🔥') : `${weekly.target - weekly.count} ${tx('more to hit goal')}`}
               </p>
             </div>
 
@@ -323,33 +325,33 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="rounded-3xl bg-gradient-to-br from-zinc-900 to-zinc-950 text-white p-5 border border-zinc-800 shadow-xl relative overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <span className="px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-[10px] font-black uppercase tracking-wider border border-orange-500/30">
-              Active Program
+              {tx('Active Program')}
             </span>
             <button
               onClick={() => onNavigateTab('workouts')}
               className="text-xs text-zinc-400 hover:text-white flex items-center gap-0.5"
             >
-              View Plan <ChevronRight className="w-3.5 h-3.5" />
+              {tx('View Plan')} <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <h3 className="text-lg font-black text-white">{currentProgram.title}</h3>
+          <h3 className="text-lg font-black text-white">{tx(currentProgram.title)}</h3>
           <p className="text-xs text-zinc-400 mt-0.5">
             Day {activeProgram?.currentDay || 1} of {currentProgram.durationDays}:{' '}
-            <span className="text-zinc-200 font-semibold">{currentProgramDay?.title}</span>
+            <span className="text-zinc-200 font-semibold">{currentProgramDay?.title && tx(currentProgramDay.title)}</span>
           </p>
 
           <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-zinc-400">
               <Calendar className="w-4 h-4 text-orange-400" />
               <span>
-                {activeProgram?.completedDays?.length || 0} completed
+                {activeProgram?.completedDays?.length || 0} {tx('completed')}
               </span>
             </div>
 
             {currentProgramDay?.isRestDay ? (
               <span className="px-3 py-1.5 rounded-xl bg-zinc-800 text-xs font-semibold text-zinc-300">
-                Rest Day Today 🧘
+                {tx('Rest Day Today 🧘')}
               </span>
             ) : (
               <button
@@ -361,7 +363,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="py-2 px-4 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-orange-600/30 active:scale-95 transition-all"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
-                Start Day {activeProgram?.currentDay}
+                {tx('Start Day')} {activeProgram?.currentDay}
               </button>
             )}
           </div>
@@ -374,24 +376,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-black uppercase tracking-wider text-white">
               <Sparkles className="w-3.5 h-3.5" />
-              Today's Recommended Workout
+              {tx("Today's Recommended Workout")}
             </div>
             <h3 className="text-2xl font-black tracking-tight text-white pt-1">
-              {recommendedWorkout.title}
+              {tx(recommendedWorkout.title)}
             </h3>
             <p className="text-xs text-white/90 leading-relaxed max-w-sm">
-              {recommendedWorkout.description}
+              {tx(recommendedWorkout.description)}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-semibold text-white/90">
             <span className="flex items-center gap-1 bg-black/20 px-2.5 py-1 rounded-lg">
               <Clock className="w-3.5 h-3.5" />
-              {recommendedWorkout.estimatedMinutes} mins
+              {recommendedWorkout.estimatedMinutes} {tx('mins')}
             </span>
             <span className="flex items-center gap-1 bg-black/20 px-2.5 py-1 rounded-lg">
               <Dumbbell className="w-3.5 h-3.5" />
-              {recommendedWorkout.exercises.length} Exercises
+              {recommendedWorkout.exercises.length} {tx('Exercises')}
             </span>
             <span className="bg-black/20 px-2.5 py-1 rounded-lg">
               {recommendedWorkout.difficulty}
@@ -404,7 +406,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-full sm:w-auto py-3.5 px-6 rounded-2xl bg-white hover:bg-zinc-100 text-zinc-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg active:scale-98 transition-all"
             >
               <Play className="w-4 h-4 fill-current text-orange-600" />
-              Start Workout Now
+              {tx('Start Workout Now')}
             </button>
           </div>
         </div>
@@ -414,13 +416,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-            Quick Start Sessions
+            {tx('Quick Start Sessions')}
           </h2>
           <button
             onClick={() => onNavigateTab('workouts')}
             className="text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline"
           >
-            All Workouts →
+            {tx('All Workouts →')}
           </button>
         </div>
 
@@ -433,7 +435,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             >
               <span className="text-2xl block mb-2">{item.icon}</span>
               <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                {item.title}
+                {tx(item.title)}
               </h3>
               <div className="flex items-center gap-1 text-[11px] text-zinc-600 dark:text-zinc-300 font-medium mt-1">
                 <Clock className="w-3 h-3 text-zinc-600 dark:text-zinc-300" />
@@ -448,13 +450,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-            Recent Activity
+            {tx('Recent Activity')}
           </h2>
           <button
             onClick={() => onNavigateTab('progress')}
             className="text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline"
           >
-            Full Log →
+            {tx('Full Log →')}
           </button>
         </div>
 
@@ -462,10 +464,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="p-6 rounded-3xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center space-y-2 bg-zinc-50/50 dark:bg-zinc-900/30">
             <div className="text-2xl">🌱</div>
             <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
-              No workouts logged yet.
+              {tx('No workouts logged yet.')}
             </p>
             <p className="text-[11px] text-zinc-600 dark:text-zinc-300">
-              Start today's recommended workout above to begin your fitness log!
+              {tx("Start today's recommended workout above to begin your fitness log!")}
             </p>
           </div>
         ) : (
@@ -494,7 +496,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
 
                 <span className="text-xs px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-semibold capitalize">
-                  {log.feeling || 'Completed'}
+                  {tx(log.feeling || 'Completed')}
                 </span>
               </div>
             ))}

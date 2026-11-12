@@ -597,7 +597,10 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
 
       <ExerciseModal
         exercise={selectedExercise}
-        onClose={() => setSelectedExercise(null)}
+        onClose={() => {
+          setSelectedExercise(null);
+          setShowPicker(true);
+        }}
         onAddToCustom={exercise => addExerciseFromPicker(exercise.id)}
         intervalSeconds={selectedExercise?.defaultDuration}
       />
