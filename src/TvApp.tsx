@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Play, ChevronLeft, ChevronRight, MonitorPlay } from 'lucide-react';
 import { Exercise, Workout, WorkoutLog } from './types';
 import { PROGRAMS } from './data/programs';
@@ -7,7 +7,10 @@ import { ExerciseMedia } from './components/ExerciseMedia';
 import { TvWorkoutPlayer } from './components/TvWorkoutPlayer';
 import { LanguageProvider, useLanguage } from './i18n';
 
-const TV_WORKOUTS: Workout[] = PROGRAMS.reduce<Workout[]>((acc, program) => {
+const REMOTE_TV_WORKOUTS_URL = 'https://tespechit.github.io/HOMEfit-preview/tv-workouts.json';
+const LOCAL_TV_WORKOUTS_URL = '/tv-workouts.json';
+
+const DEFAULT_TV_WORKOUTS: Workout[] = PROGRAMS.reduce<Workout[]>((acc, program) => {
   const items = program.days
     .filter(day => !day.isRestDay && day.exercises.length > 0)
     .slice(0, 2)
@@ -24,14 +27,96 @@ const TV_WORKOUTS: Workout[] = PROGRAMS.reduce<Workout[]>((acc, program) => {
   return acc.concat(items);
 }, []);
 
+interface TvWorkoutsResponse {
+  workouts?: Workout[];
+}
+
+function isValidWorkoutPayload(payload: unknown): payload is TvWorkoutsResponse {
+  if (!payload || typeof payload !== 'object') return false;
+  const data = payload as TvWorkoutsResponse;
+  return Array.isArray(data.workouts);
+}
+
 function TvContent() {
   const { language } = useLanguage();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const selectedWorkout = TV_WORKOUTS[selectedIndex];
+  const [workouts, setWorkouts] = useState<Workout[]>(DEFAULT_TV_WORKOUTS);
+  const [loadingRemote, setLoadingRemote] = useState(true);
+  const [workoutSource, setWorkoutSource] = useState<'remote' | 'local' | 'fallback'>('fallback');
 
-  if (TV_WORKOUTS.length === 0 || !selectedWorkout) {
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadWorkouts = async () => {
+      setLoadingRemote(true);
+
+      const sources = [REMOTE_TV_WORKOUTS_URL, LOCAL_TV_WORKOUTS_URL];
+
+      for (const source of sources) {
+        try {
+          const response = await fetch(source, { cache: 'no-store' });
+          if (!response.ok) continue;
+
+          const payload: unknown = await response.json();
+          if (!isValidWorkoutPayload(payload) || payload.workouts.length === 0) continue;
+
+          if (isMounted) {
+            setWorkouts(payload.workouts);
+            setWorkoutSource(source === REMOTE_TV_WORKOUTS_URL ? 'remote' : 'local');
+            setLoadingRemote(false);
+          }
+          return;
+        } catch (_error) {
+          // Keep trying next source.
+        }
+      }
+
+      if (isMounted) {
+        setWorkouts(DEFAULT_TV_WORKOUTS);
+        setWorkoutSource('fallback');
+        setLoadingRemote(false);
+      }
+    };
+
+    void loadWorkouts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    setSelectedIndex(index => {
+      if (workouts.length === 0) return 0;
+      return index % workouts.length;
+    });
+  }, [workouts]);
+
+  const selectedWorkout = workouts[selectedIndex];
+
+  const exercisePreviews = useMemo(
+    () => (selectedWorkout?.exercises || [])
+      .map(item => EXERCISES_BY_ID.get(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise)),
+    [selectedWorkout],
+  );
+
+  if (loadingRemote && workouts.length === 0) {
+    return (
+      <main className="tv-shell tv-empty">
+        <div className="tv-empty-content">
+          <h1 className="tv-empty-title">HomeFit TV</h1>
+          <p className="tv-empty-subtitle">
+            {language === 'pt-BR' ? 'Carregando treinos do GitHub Pages...' : 'Loading workouts from GitHub Pages...'}
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (workouts.length === 0 || !selectedWorkout) {
     return (
       <main className="tv-shell tv-empty">
         <div className="tv-empty-content">
@@ -44,15 +129,8 @@ function TvContent() {
     );
   }
 
-  const exercisePreviews = useMemo(
-    () => selectedWorkout.exercises
-      .map(item => EXERCISES_BY_ID.get(item.exerciseId))
-      .filter((exercise): exercise is Exercise => Boolean(exercise)),
-    [selectedWorkout],
-  );
-
   const moveSelection = (direction: number) => {
-    setSelectedIndex(index => (index + direction + TV_WORKOUTS.length) % TV_WORKOUTS.length);
+    setSelectedIndex(index => (index + direction + workouts.length) % workouts.length);
   };
 
   const finishWorkout = (_log: WorkoutLog) => setActiveWorkout(null);
@@ -152,7 +230,10 @@ function TvContent() {
 
       <footer className="tv-footer">
         <span>Use ◀ ▶ para trocar o treino · OK/Enter para iniciar</span>
-        <span>{selectedIndex + 1} / {TV_WORKOUTS.length}</span>
+        <span>
+          {selectedIndex + 1} / {workouts.length}
+          {workoutSource === 'remote' ? ' · GitHub Pages' : workoutSource === 'local' ? ' · local' : ' · fallback'}
+        </span>
       </footer>
     </main>
   );

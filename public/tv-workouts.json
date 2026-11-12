@@ -1,0 +1,341 @@
+{
+  "source": "github-pages",
+  "generatedAt": "2026-11-12T21:41:25.080Z",
+  "workouts": [
+    {
+      "id": "tv-7-day-kickstart-1",
+      "title": "Full Body Ignite",
+      "description": "Foundation movement & stamina",
+      "category": "Full Body",
+      "difficulty": "Beginner",
+      "estimatedMinutes": 15,
+      "exercises": [
+        {
+          "exerciseId": "jumping-jacks",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "bodyweight-squats",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "wall-pushups",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "forearm-plank",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "glute-bridges",
+          "workSec": 35,
+          "restSec": 20
+        }
+      ]
+    },
+    {
+      "id": "tv-7-day-kickstart-2",
+      "title": "Core Stability & Spine",
+      "description": "Abdominal strength & posture",
+      "category": "Full Body",
+      "difficulty": "Beginner",
+      "estimatedMinutes": 14,
+      "exercises": [
+        {
+          "exerciseId": "dead-bug",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "bird-dog",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "shoulder-taps",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "glute-bridges",
+          "workSec": 35,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "forearm-plank",
+          "workSec": 35,
+          "restSec": 20
+        }
+      ]
+    },
+    {
+      "id": "tv-30-day-fat-burn-1",
+      "title": "Day 1: HIIT Turbo Burn",
+      "description": "Cardio & maximal oxygen consumption",
+      "category": "Cardio/HIIT",
+      "difficulty": "Intermediate",
+      "estimatedMinutes": 20,
+      "exercises": [
+        {
+          "exerciseId": "burpees",
+          "workSec": 40,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "jumping-jacks",
+          "workSec": 40,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "mountain-climbers",
+          "workSec": 40,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "skater-hops",
+          "workSec": 40,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "high-knees",
+          "workSec": 40,
+          "restSec": 20
+        },
+        {
+          "exerciseId": "half-burpees",
+          "workSec": 40,
+          "restSec": 20
+        }
+      ]
+    },
+    {
+      "id": "tv-30-day-fat-burn-2",
+      "title": "Day 2: Total Strength Blitz",
+      "description": "Full-body muscular resistance",
+      "category": "Cardio/HIIT",
+      "difficulty": "Intermediate",
+      "estimatedMinutes": 22,
+      "exercises": [
+        {
+          "exerciseId": "bodyweight-squats",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "standard-pushups",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "reverse-lunges",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "tricep-dips",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "forearm-plank",
+          "workSec": 45,
+          "restSec": 15
+        }
+      ]
+    },
+    {
+      "id": "tv-abs-in-4-weeks-1",
+      "title": "Day 1: Deep Core & Obliques",
+      "description": "Rotational stability and anti-extension",
+      "category": "Core/Abs",
+      "difficulty": "Intermediate",
+      "estimatedMinutes": 16,
+      "exercises": [
+        {
+          "exerciseId": "forearm-plank",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "bicycle-crunches",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "russian-twists",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "side-plank",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "mountain-climber-twists",
+          "workSec": 35,
+          "restSec": 15
+        }
+      ]
+    },
+    {
+      "id": "tv-abs-in-4-weeks-2",
+      "title": "Day 2: Six-Pack Builder",
+      "description": "Upper & lower rectus abdominis focus",
+      "category": "Core/Abs",
+      "difficulty": "Intermediate",
+      "estimatedMinutes": 16,
+      "exercises": [
+        {
+          "exerciseId": "leg-raises",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "dead-bug",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "flutter-kicks",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "hollow-body-hold",
+          "workSec": 35,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "v-ups",
+          "workSec": 35,
+          "restSec": 15
+        }
+      ]
+    },
+    {
+      "id": "tv-beginner-strength-1",
+      "title": "Day 1: Upper & Lower Strength",
+      "description": "Compound bodyweight movements",
+      "category": "Upper Body",
+      "difficulty": "Beginner",
+      "estimatedMinutes": 18,
+      "exercises": [
+        {
+          "exerciseId": "standard-pushups",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "bodyweight-squats",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "tricep-dips",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "reverse-lunges",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "forearm-plank",
+          "workSec": 40,
+          "restSec": 25
+        }
+      ]
+    },
+    {
+      "id": "tv-beginner-strength-3",
+      "title": "Day 3: Upper & Lower Strength",
+      "description": "Compound bodyweight movements",
+      "category": "Upper Body",
+      "difficulty": "Beginner",
+      "estimatedMinutes": 18,
+      "exercises": [
+        {
+          "exerciseId": "standard-pushups",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "bodyweight-squats",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "tricep-dips",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "reverse-lunges",
+          "workSec": 40,
+          "restSec": 25
+        },
+        {
+          "exerciseId": "forearm-plank",
+          "workSec": 40,
+          "restSec": 25
+        }
+      ]
+    },
+    {
+      "id": "tv-daily-mobility-yoga-1",
+      "title": "Spine & Neck Decompress",
+      "description": "Cervical & thoracic release",
+      "category": "Stretching/Yoga",
+      "difficulty": "Beginner",
+      "estimatedMinutes": 12,
+      "exercises": [
+        {
+          "exerciseId": "cat-cow-stretch",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "childs-pose",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "cobra-stretch",
+          "workSec": 45,
+          "restSec": 15
+        }
+      ]
+    },
+    {
+      "id": "tv-daily-mobility-yoga-2",
+      "title": "Hip Opener Flow",
+      "description": "Relieve tight hips & pelvic tilt",
+      "category": "Stretching/Yoga",
+      "difficulty": "Beginner",
+      "estimatedMinutes": 14,
+      "exercises": [
+        {
+          "exerciseId": "pigeon-pose",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "worlds-greatest-stretch",
+          "workSec": 45,
+          "restSec": 15
+        },
+        {
+          "exerciseId": "childs-pose",
+          "workSec": 45,
+          "restSec": 15
+        }
+      ]
+    }
+  ]
+}
