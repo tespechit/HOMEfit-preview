@@ -25,6 +25,11 @@ export const FREE_EXERCISES = records as FreeExerciseRecord[];
 const normalize = (value: string) =>
   value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
 
+const normalizeVariants = (value: string): string[] => {
+  const normalized = normalize(value);
+  return [normalized, normalized.replace(/s$/, '')];
+};
+
 const sourceByHomefitId: Record<string, string[]> = {
   burpees: ['Burpee'],
   'jumping-jacks': ['Jumping Jack'],
@@ -33,6 +38,7 @@ const sourceByHomefitId: Record<string, string[]> = {
   'wide-grip-pushups': ['Push-Up'],
   'pike-pushups': ['Push-Up'],
   'decline-pushups': ['Push-Up'],
+  'incline-pushups': ['Incline Push-Up'],
   'wall-pushups': ['Push-Up'],
   'bodyweight-squats': ['Squat'],
   'jump-squats': ['Squat'],
@@ -47,10 +53,11 @@ const sourceByHomefitId: Record<string, string[]> = {
 
 export const findFreeExerciseRecord = (exercise: Exercise) => {
   const candidates = sourceByHomefitId[exercise.id] || [exercise.name];
-  return FREE_EXERCISES.find(record => {
-    const names = [record.name, ...(record.aliases || [])].map(normalize);
-    return candidates.some(candidate => names.includes(normalize(candidate)));
+  const matchingRecords = FREE_EXERCISES.filter(record => {
+    const names = [record.name, ...(record.aliases || [])].flatMap(normalizeVariants);
+    return candidates.some(candidate => normalizeVariants(candidate).some(variant => names.includes(variant)));
   });
+  return matchingRecords.find(record => record.videos?.male || record.videos?.female) || matchingRecords[0];
 };
 
 export const getFreeExerciseMedia = (exercise: Exercise): FreeExerciseMedia | undefined => {

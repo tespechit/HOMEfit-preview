@@ -51,6 +51,8 @@ const textTranslations: Record<string, string> = {
   'Form Cues': 'Dicas de execução',
   'Breathing': 'Respiração',
   'Coach Pro Tip': 'Dica do treinador',
+  'Avg Burn': 'Gasto médio',
+  'Estimated burn for standard interval': 'Gasto estimado no intervalo padrão',
   'Ready-Made Programs': 'Programas prontos',
   'Exercise Library': 'Biblioteca de exercícios',
   Enrolled: 'Inscrito',
@@ -114,6 +116,84 @@ const textTranslations: Record<string, string> = {
   'HomeFit Philosophy': 'Filosofia HomeFit',
   'Calisthenics Proverb': 'Provérbio de calistenia',
   'Daily Reminder': 'Lembrete diário',
+};
+
+const exerciseTextTranslations: Record<string, string> = {
+  'Incline Push-Up': 'Flexão inclinada',
+  'upper body': 'membros superiores',
+  'Upper Body': 'Membros superiores',
+  'beginner': 'iniciante',
+  'body weight': 'peso corporal',
+  'pectorals': 'peitorais',
+  'anterior deltoids': 'deltoides anteriores',
+  'triceps': 'tríceps',
+  'Place hands shoulder-width apart on elevated surface.': 'Coloque as mãos afastadas na largura dos ombros sobre uma superfície elevada.',
+  'Extend legs back with feet together, forming a straight line.': 'Estenda as pernas para trás, mantendo os pés juntos e formando uma linha reta.',
+  'Lower chest toward the surface, elbows at 45 degrees.': 'Aproxime o peito da superfície, mantendo os cotovelos a 45 graus.',
+  'Pause when chest is just above the surface.': 'Faça uma pausa quando o peito estiver logo acima da superfície.',
+  'Push back up to starting position.': 'Empurre o corpo de volta à posição inicial.',
+  'Sagging hips': 'Quadril afundado',
+  'Flaring elbows out': 'Cotovelos muito abertos',
+  'Incomplete range of motion': 'Amplitude de movimento incompleta',
+  'Maintain straight line body': 'Mantenha o corpo em linha reta',
+  'Core engaged': 'Mantenha o abdome contraído',
+  'Lower under control': 'Desça de forma controlada',
+  'Exhale as you push up': 'Expire ao empurrar o corpo para cima',
+  'Inhale as you lower, exhale as you push up.': 'Inspire ao descer e expire ao empurrar o corpo para cima.',
+  'A push-up variation with hands elevated, reducing resistance on the chest and triceps.': 'Uma variação da flexão com as mãos elevadas, reduzindo a resistência sobre o peito e os tríceps.',
+  'Stay on your toes': 'Permaneça na ponta dos pés',
+  'cardiovascular system': 'sistema cardiovascular',
+  'full body': 'corpo inteiro',
+  'chest': 'peito',
+  'shoulders': 'ombros',
+  'back': 'costas',
+  'legs': 'pernas',
+  'glutes': 'glúteos',
+  'quads': 'quadríceps',
+  'hamstrings': 'posteriores da coxa',
+  'calves': 'panturrilhas',
+  'abs': 'abdome',
+  'core': 'abdome',
+};
+
+const exerciseWordTranslations: Record<string, string> = {
+  'shoulder-width': 'largura dos ombros',
+  'elevated': 'elevada',
+  'surface': 'superfície',
+  'feet': 'pés',
+  'together': 'juntos',
+  'straight line': 'linha reta',
+  'lower': 'desça',
+  'chest': 'peito',
+  'elbows': 'cotovelos',
+  'pause': 'faça uma pausa',
+  'starting position': 'posição inicial',
+  'hips': 'quadril',
+  'core': 'abdome',
+  'maintain': 'mantenha',
+  'engaged': 'contraído',
+  'control': 'controle',
+  'push up': 'empurre para cima',
+  'inhale': 'inspire',
+  'exhale': 'expire',
+  'body': 'corpo',
+  'upper body': 'membros superiores',
+  'lower body': 'membros inferiores',
+  'full body': 'corpo inteiro',
+  'beginner': 'iniciante',
+  'intermediate': 'intermediário',
+  'advanced': 'avançado',
+  'none': 'nenhum',
+  'body weight': 'peso corporal',
+};
+
+export const translateExerciseText = (text: string, language: Language) => {
+  if (language === 'en') return text;
+  if (exerciseTextTranslations[text]) return exerciseTextTranslations[text];
+  return Object.entries(exerciseWordTranslations).reduce(
+    (translated, [english, portuguese]) => translated.replace(new RegExp(`\\b${english}\\b`, 'gi'), portuguese),
+    text,
+  );
 };
 
 type TranslationKey = keyof typeof translations.en;

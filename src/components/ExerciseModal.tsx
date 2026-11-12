@@ -3,7 +3,7 @@ import { X, Play, AlertCircle, CheckCircle2, Lightbulb, Dumbbell } from 'lucide-
 import { Exercise } from '../types';
 import { ExerciseIllustration } from './ExerciseIllustration';
 import { ExerciseMedia } from './ExerciseMedia';
-import { useLanguage } from '../i18n';
+import { translateExerciseText, useLanguage } from '../i18n';
 
 interface ExerciseModalProps {
   exercise: Exercise | null;
@@ -20,8 +20,9 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   onAddToCustom,
   intervalSeconds,
 }) => {
-  const { tx } = useLanguage();
+  const { language, tx } = useLanguage();
   if (!exercise) return null;
+  const translate = (text: string) => translateExerciseText(text, language);
 
   return (
     <div
@@ -41,10 +42,10 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             <span className="text-2xl">{exercise.icon}</span>
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
-                {exercise.category}
+                {translate(exercise.category)}
               </span>
               <h2 id="exercise-modal-title" className="text-lg font-bold text-zinc-900 dark:text-zinc-50 leading-tight">
-                {exercise.name}
+                {translate(exercise.name)}
               </h2>
             </div>
           </div>
@@ -72,7 +73,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
 
           {exercise.freeExercise?.shortDescription && (
             <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-300">
-              {exercise.freeExercise.shortDescription}
+              {translate(exercise.freeExercise.shortDescription)}
             </p>
           )}
 
@@ -80,14 +81,14 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           <div className="grid grid-cols-3 gap-2">
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
               <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">{tx('Difficulty')}</span>
-              <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{exercise.difficulty}</p>
+              <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{translate(exercise.difficulty)}</p>
             </div>
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
               <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">{tx('Equipment')}</span>
-              <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{exercise.equipment}</p>
+              <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{translate(exercise.equipment)}</p>
             </div>
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
-              <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">Avg Burn</span>
+              <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">{tx('Avg Burn')}</span>
               <p className="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5">
                 ~{Math.round(exercise.estCaloriesPerMin * (intervalSeconds || exercise.defaultDuration) / 60)} kcal / {intervalSeconds || exercise.defaultDuration}s
               </p>
@@ -96,7 +97,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
 
           <div className="flex items-center justify-between rounded-xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200/60 dark:border-orange-900/40 px-3 py-2">
             <span className="text-[11px] font-semibold text-orange-800 dark:text-orange-200">
-              Gasto estimado no intervalo padrão
+              {tx('Estimated burn for standard interval')}
             </span>
             <span className="text-xs font-black text-orange-700 dark:text-orange-300">
               {Math.round(exercise.estCaloriesPerMin * (intervalSeconds || exercise.defaultDuration) / 60)} kcal
@@ -114,7 +115,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   key={muscle}
                   className="px-2.5 py-1 text-xs font-medium rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-200/60 dark:border-orange-800/50"
                 >
-                  {muscle}
+                  {translate(muscle)}
                 </span>
               ))}
             </div>
@@ -132,7 +133,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 flex items-center justify-center font-bold text-[11px]">
                     {idx + 1}
                   </span>
-                  <span>{step}</span>
+                  <span>{translate(step)}</span>
                 </li>
               ))}
             </ol>
@@ -149,7 +150,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 {exercise.commonMistakes.map((mistake, idx) => (
                   <li key={idx} className="flex gap-1.5">
                     <span className="text-amber-500 font-bold">•</span>
-                    <span>{mistake}</span>
+                    <span>{translate(mistake)}</span>
                   </li>
                 ))}
               </ul>
@@ -165,7 +166,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 {exercise.freeExercise.formCues.map(cue => (
                   <li key={cue} className="flex gap-1.5">
                     <span className="text-blue-500 font-bold">•</span>
-                    <span>{cue}</span>
+                    <span>{translate(cue)}</span>
                   </li>
                 ))}
               </ul>
@@ -177,7 +178,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider mb-1 text-cyan-700 dark:text-cyan-400">
                 {tx('Breathing')}
               </h3>
-              <p className="text-xs leading-relaxed">{exercise.freeExercise.breathing}</p>
+              <p className="text-xs leading-relaxed">{translate(exercise.freeExercise.breathing)}</p>
             </div>
           )}
 
@@ -188,7 +189,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 <Lightbulb className="w-4 h-4" />
                 {tx('Coach Pro Tip')}
               </h3>
-              <p className="text-xs leading-relaxed">{exercise.proTip}</p>
+              <p className="text-xs leading-relaxed">{translate(exercise.proTip)}</p>
             </div>
           )}
         </div>
