@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
+    "build:webos": "VITE_TV_MODE=1 vite build && rm -rf dist-webos && mkdir -p dist-webos && cp -R dist/. dist-webos/ && cp webos/appinfo.json webos/icon.svg dist-webos/",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"

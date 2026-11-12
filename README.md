@@ -11,3 +11,19 @@ The exercise library is enriched with the metadata and remote male/female demo v
 [Free Exercise DB with Videos](https://github.com/harshvishu/free-exercise-db-with-videos),
 licensed under MIT. The full catalog is bundled in `src/data/free-exercise-db.json`; video files
 remain served from the source project's CDN so the application does not ship hundreds of large MP4s.
+
+## LG webOS TV module
+
+The TV interface is available from the same build with `?tv=1`, for example
+`https://tespechit.github.io/HOMEfit-preview/?tv=1`. It is designed for LG Magic
+Remote navigation: left/right changes the workout and OK/Enter starts it. During
+the workout, left/right skips exercises, Space/Enter pauses, and Escape opens the
+exit confirmation.
+
+To prepare a webOS package, run `npm run build:webos` and package the generated
+`dist-webos` directory with the LG webOS CLI:
+
+```bash
+ares-package dist-webos
+ares-install com.tespechit.homefit.tv_1.0.0_all.ipk
+```

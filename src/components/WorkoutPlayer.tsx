@@ -90,6 +90,27 @@ export const WorkoutPlayer: React.FC<WorkoutPlayerProps> = ({
     },
   });
 
+  useEffect(() => {
+    const handleRemoteKey = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        handlePrevious();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        handleNext();
+      } else if (event.key === ' ' || event.key === 'Enter') {
+        event.preventDefault();
+        togglePause();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        setShowExitConfirm(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleRemoteKey);
+    return () => window.removeEventListener('keydown', handleRemoteKey);
+  }, [handleNext, handlePrevious, togglePause]);
+
   // Safe exercise lookups
   const currentEx: Exercise | undefined = currentExerciseItem
     ? EXERCISES_BY_ID.get(currentExerciseItem.exerciseId)
