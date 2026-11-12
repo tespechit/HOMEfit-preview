@@ -12,9 +12,16 @@ export type EquipmentType = 'None' | 'Dumbbells' | 'Resistance Bands' | 'Chair/W
 
 export interface FreeExerciseMedia {
   id: string;
+  bodyPart: string;
+  target: string;
+  equipment: string;
+  difficulty: string;
+  aliases: string[];
   shortDescription: string;
+  instructions: string;
   secondaryMuscles: string[];
   sourceName: string;
+  commonMistakes: string[];
   steps: string[];
   formCues: string[];
   breathing: string;
@@ -44,6 +51,8 @@ export interface Exercise {
   icon: string; // emoji or visual cue
   animationType?: 'squat' | 'pushup' | 'lunge' | 'jumping_jack' | 'plank' | 'burpee' | 'crunch' | 'stretch' | 'cardio';
   freeExercise?: FreeExerciseMedia;
+  exerciseType?: 'Aerobic' | 'Strength' | 'Stretching';
+  exerciseRegion?: 'Full Body' | 'Upper Front' | 'Upper Back' | 'Lower Body' | 'Abdomen' | 'Glutes';
 }
 
 export interface WorkoutExerciseItem {

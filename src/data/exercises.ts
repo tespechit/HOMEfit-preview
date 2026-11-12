@@ -1,5 +1,5 @@
 import { Exercise } from '../types';
-import { getFreeExerciseMedia } from './freeExerciseDb';
+import { classifyFreeExercise, findFreeExerciseRecord, FREE_EXERCISES, getFreeExerciseMedia } from './freeExerciseDb';
 
 export const EXERCISES: Exercise[] = [
   // --- FULL BODY (7) ---
@@ -1178,6 +1178,12 @@ export const CATEGORIES = [
 
 EXERCISES.forEach(exercise => {
   exercise.freeExercise = getFreeExerciseMedia(exercise);
+  const record = findFreeExerciseRecord(exercise);
+  if (record) {
+    const classification = classifyFreeExercise(record);
+    exercise.exerciseType = classification.exerciseType;
+    exercise.exerciseRegion = classification.exerciseRegion;
+  }
   if (exercise.freeExercise?.steps.length) {
     exercise.instructions = exercise.freeExercise.steps;
   }
@@ -1185,5 +1191,64 @@ EXERCISES.forEach(exercise => {
     exercise.targetMuscles = [...new Set([...exercise.targetMuscles, ...exercise.freeExercise.secondaryMuscles])];
   }
 });
+
+const existingSourceIds = new Set(
+  EXERCISES.map(exercise => exercise.freeExercise?.id).filter(Boolean)
+);
+
+const equipmentType = (equipment: string): Exercise['equipment'] =>
+  equipment === 'body weight' ? 'None' :
+    equipment === 'band' ? 'Resistance Bands' :
+      equipment === 'dumbbell' ? 'Dumbbells' : 'Chair/Wall';
+
+const generatedExercises: Exercise[] = FREE_EXERCISES
+  .filter(record => !existingSourceIds.has(record.id))
+  .map(record => {
+    const { exerciseType, exerciseRegion } = classifyFreeExercise(record);
+    const category: Exercise['category'] =
+      exerciseType === 'Aerobic' ? 'Cardio/HIIT' :
+        exerciseType === 'Stretching' ? 'Stretching/Yoga' :
+          exerciseRegion === 'Upper Front' || exerciseRegion === 'Upper Back' ? 'Upper Body' :
+            exerciseRegion === 'Abdomen' ? 'Core/Abs' : 'Lower Body';
+    const difficulty = record.difficulty === 'advanced' ? 'Advanced' : record.difficulty === 'intermediate' ? 'Intermediate' : 'Beginner';
+    const media = {
+      id: record.id,
+      bodyPart: record.bodyPart,
+      target: record.target,
+      equipment: record.equipment,
+      difficulty: record.difficulty,
+      aliases: record.aliases || [],
+      sourceName: record.name,
+      shortDescription: record.shortDescription || '',
+      instructions: record.instructions || '',
+      secondaryMuscles: record.secondaryMuscles || [],
+      commonMistakes: record.commonMistakes || [],
+      steps: record.steps || [],
+      formCues: record.formCues || [],
+      breathing: record.breathing || '',
+      videos: record.videos || {},
+      thumbnails: record.thumbnails || {},
+    };
+    return {
+      id: `free-${record.id}`,
+      name: record.name,
+      category,
+      targetMuscles: [record.target, ...(record.secondaryMuscles || [])],
+      difficulty,
+      equipment: equipmentType(record.equipment),
+      defaultDuration: exerciseType === 'Stretching' ? 45 : 40,
+      estCaloriesPerMin: exerciseType === 'Aerobic' ? 10 : exerciseType === 'Strength' ? 7 : 3,
+      instructions: record.steps || [],
+      commonMistakes: record.commonMistakes || [],
+      proTip: record.formCues?.[0] || '',
+      icon: exerciseType === 'Aerobic' ? '⚡' : exerciseType === 'Stretching' ? '🧘' : '💪',
+      animationType: exerciseType === 'Stretching' ? 'stretch' : exerciseType === 'Aerobic' ? 'cardio' : 'squat',
+      freeExercise: media,
+      exerciseType,
+      exerciseRegion,
+    };
+  });
+
+EXERCISES.push(...generatedExercises);
 
 export const EXERCISES_BY_ID = new Map(EXERCISES.map(e => [e.id, e]));

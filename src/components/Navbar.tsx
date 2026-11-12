@@ -1,5 +1,6 @@
 import React from 'react';
-import { Flame, Moon, Sun, Dumbbell, Volume2, VolumeX } from 'lucide-react';
+import { Flame, Moon, Sun, Dumbbell, Volume2, VolumeX, Languages } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 interface NavbarProps {
   currentStreak: number;
@@ -18,6 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleSound,
   onQuickStart,
 }) => {
+  const { language, setLanguage, t } = useLanguage();
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-200/80 dark:border-zinc-800/80 transition-colors">
       <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -31,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               Home<span className="text-orange-600 dark:text-orange-500">Fit</span>
             </h1>
             <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-300 tracking-wide uppercase">
-              No Gym Equipment
+              {t('noEquipment')}
             </span>
           </div>
         </div>
@@ -60,6 +62,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
+          <button
+            type="button"
+            onClick={() => setLanguage(language === 'en' ? 'pt-BR' : 'en')}
+            aria-label={t('language')}
+            title={t('language')}
+            className="flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <Languages className="w-4 h-4" />
+            {language === 'en' ? 'EN' : 'BR'}
+          </button>
+
           {/* Dark mode toggle */}
           <button
             onClick={onToggleDarkMode}
@@ -78,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onQuickStart}
             className="hidden sm:flex items-center gap-1.5 py-1.5 px-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-xs transition-all active:scale-95"
           >
-            <span>Quick Start</span>
+            <span>{t('quickStart')}</span>
           </button>
         </div>
       </div>

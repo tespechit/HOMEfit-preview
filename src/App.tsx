@@ -21,6 +21,7 @@ import { WorkoutsView } from './components/views/WorkoutsView';
 import { CustomBuilderView } from './components/views/CustomBuilderView';
 import { ProgressView } from './components/views/ProgressView';
 import { ProfileView } from './components/views/ProfileView';
+import { LanguageProvider } from './i18n';
 
 // Default initial user profile
 const DEFAULT_PROFILE: UserProfile = {
@@ -287,6 +288,7 @@ export default function App() {
   };
 
   return (
+    <LanguageProvider>
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-200">
       {/* Top Header Navbar */}
       <Navbar
@@ -392,5 +394,6 @@ export default function App() {
         />
       )}
     </div>
+    </LanguageProvider>
   );
 }

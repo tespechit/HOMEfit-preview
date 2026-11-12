@@ -1,5 +1,6 @@
 import React from 'react';
 import { Home, Compass, PlusCircle, TrendingUp, User } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 export type TabType = 'home' | 'workouts' | 'custom' | 'progress' | 'profile';
 
@@ -9,12 +10,13 @@ interface BottomNavProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) => {
+  const { t } = useLanguage();
   const tabs = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'workouts', label: 'Workouts', icon: Compass },
-    { id: 'custom', label: 'Builder', icon: PlusCircle },
-    { id: 'progress', label: 'Progress', icon: TrendingUp },
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'home', label: t('home'), icon: Home },
+    { id: 'workouts', label: t('workouts'), icon: Compass },
+    { id: 'custom', label: t('builder'), icon: PlusCircle },
+    { id: 'progress', label: t('progress'), icon: TrendingUp },
+    { id: 'profile', label: t('profile'), icon: User },
   ] as const;
 
   return (
