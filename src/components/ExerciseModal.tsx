@@ -9,6 +9,7 @@ interface ExerciseModalProps {
   onClose: () => void;
   onStartSingle?: (exercise: Exercise) => void;
   onAddToCustom?: (exercise: Exercise) => void;
+  intervalSeconds?: number;
 }
 
 export const ExerciseModal: React.FC<ExerciseModalProps> = ({
@@ -16,6 +17,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   onClose,
   onStartSingle,
   onAddToCustom,
+  intervalSeconds,
 }) => {
   if (!exercise) return null;
 
@@ -84,8 +86,19 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             </div>
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
               <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">Avg Burn</span>
-              <p className="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5">~{exercise.estCaloriesPerMin} kcal/m</p>
+              <p className="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5">
+                ~{Math.round(exercise.estCaloriesPerMin * (intervalSeconds || exercise.defaultDuration) / 60)} kcal / {intervalSeconds || exercise.defaultDuration}s
+              </p>
             </div>
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200/60 dark:border-orange-900/40 px-3 py-2">
+            <span className="text-[11px] font-semibold text-orange-800 dark:text-orange-200">
+              Gasto estimado no intervalo padrão
+            </span>
+            <span className="text-xs font-black text-orange-700 dark:text-orange-300">
+              {Math.round(exercise.estCaloriesPerMin * (intervalSeconds || exercise.defaultDuration) / 60)} kcal
+            </span>
           </div>
 
           {/* Target muscles */}

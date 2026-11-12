@@ -11,11 +11,12 @@ import {
   Sparkles,
   Search,
   Check,
-  X
+  X,
 } from 'lucide-react';
 import { Workout, WorkoutExerciseItem, Exercise } from '../../types';
 import { EXERCISES, EXERCISES_BY_ID } from '../../data/exercises';
 import { calculateWorkoutDuration, estimateCaloriesBurned, formatTime } from '../../utils/fitness';
+import { ExerciseModal } from '../ExerciseModal';
 
 interface CustomBuilderViewProps {
   customWorkouts: Workout[];
@@ -45,6 +46,10 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
   // Exercise Picker Modal
   const [showPicker, setShowPicker] = useState(false);
   const [pickerSearch, setPickerSearch] = useState('');
+  const [pickerType, setPickerType] = useState('Todos');
+  const [pickerRegion, setPickerRegion] = useState('Todas');
+  const [pickerMuscle, setPickerMuscle] = useState('');
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
 
   const handleOpenNew = () => {
     setTitle('My Custom Routine');
@@ -119,14 +124,60 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
     setShowPicker(false);
   };
 
+  const getExerciseType = (exercise: Exercise) => {
+    if (exercise.category === 'Cardio/HIIT') return 'Aeróbico';
+    if (exercise.category === 'Stretching/Yoga') return 'Alongamento';
+    return 'Força';
+  };
+
+  const getExerciseRegion = (exercise: Exercise) => {
+    const text = `${exercise.name} ${exercise.targetMuscles.join(' ')}`.toLowerCase();
+    if (exercise.category === 'Full Body' || /cardio|cardiovascular|full body|burpee|jumping|high knee|mountain climber/.test(text)) {
+      return 'Todo o corpo';
+    }
+    if (/glute|glúteo|hip|quadril/.test(text)) return 'Glúteo';
+    if (/abs|core|waist|oblique|abdom|rectus/.test(text)) return 'Abdome';
+    if (/quad|hamstring|calf|leg|thigh|lower body|knee|glute/.test(text)) return 'Membros inferiores';
+    if (/back|lat|tricep|bicep|shoulder|chest|pectoral|arm|upper body/.test(text)) {
+      return /back|lat|tricep/.test(text)
+        ? 'Membros superiores - Posterior'
+        : 'Membros superiores - Anterior';
+    }
+    return 'Todo o corpo';
+  };
+
+  const pickerTypes = ['Todos', 'Aeróbico', 'Força', 'Alongamento'];
+  const pickerTypeExercises = EXERCISES.filter(ex => pickerType === 'Todos' || getExerciseType(ex) === pickerType);
+  const pickerRegions = [
+    'Todas',
+    ...Array.from(new Set(pickerTypeExercises.map(getExerciseRegion))).sort(),
+  ];
+  const muscleNames = Array.from(
+    new Set(
+      pickerTypeExercises.flatMap(ex => [
+        ...ex.targetMuscles,
+        ...(ex.freeExercise?.secondaryMuscles || []),
+      ])
+    )
+  ).sort((a, b) => a.localeCompare(b));
+  const muscleSuggestions = pickerMuscle.length >= 2
+    ? muscleNames.filter(muscle => muscle.toLowerCase().includes(pickerMuscle.toLowerCase())).slice(0, 6)
+    : [];
+
   const estDurationSec = calculateWorkoutDuration(items, 5);
   const estCalories = estimateCaloriesBurned(estDurationSec, 8.5);
 
-  const filteredLibrary = EXERCISES.filter(ex =>
-    ex.name.toLowerCase().includes(pickerSearch.toLowerCase()) ||
-    ex.category.toLowerCase().includes(pickerSearch.toLowerCase()) ||
-    ex.targetMuscles.some(m => m.toLowerCase().includes(pickerSearch.toLowerCase()))
-  );
+  const filteredLibrary = pickerTypeExercises.filter(ex => {
+    const search = pickerSearch.toLowerCase();
+    const muscles = [...ex.targetMuscles, ...(ex.freeExercise?.secondaryMuscles || [])];
+    return (
+      (ex.name.toLowerCase().includes(search) ||
+        ex.category.toLowerCase().includes(search) ||
+        muscles.some(m => m.toLowerCase().includes(search))) &&
+      (pickerRegion === 'Todas' || getExerciseRegion(ex) === pickerRegion) &&
+      (!pickerMuscle || muscles.some(m => m.toLowerCase().includes(pickerMuscle.toLowerCase())))
+    );
+  });
 
   return (
     <div className="space-y-6 pb-24 animate-in fade-in duration-300">
@@ -228,6 +279,9 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
                 type="button"
                 onClick={() => {
                   setPickerSearch('');
+                  setPickerType('Todos');
+                  setPickerRegion('Todas');
+                  setPickerMuscle('');
                   setShowPicker(true);
                 }}
                 className="py-1 px-3 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 text-xs font-bold hover:bg-orange-200 dark:hover:bg-orange-900 flex items-center gap-1"
@@ -476,11 +530,77 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
               />
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                Tipo de exercício
+                <select
+                  value={pickerType}
+                  onChange={e => {
+                    setPickerType(e.target.value);
+                    setPickerRegion('Todas');
+                  }}
+                  className="mt-1 w-full rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100"
+                >
+                  {pickerTypes.map(type => <option key={type}>{type}</option>)}
+                </select>
+              </label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                Região trabalhada
+                <select
+                  value={pickerRegion}
+                  onChange={e => setPickerRegion(e.target.value)}
+                  className="mt-1 w-full rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100"
+                >
+                  {pickerRegions.map(region => <option key={region}>{region}</option>)}
+                </select>
+              </label>
+            </div>
+
+            <div className="relative mb-3">
+              <input
+                type="text"
+                value={pickerMuscle}
+                onChange={e => setPickerMuscle(e.target.value)}
+                placeholder="Filtrar por músculo (ex.: glúteos, quadríceps)"
+                className="w-full px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                role="combobox"
+                aria-autocomplete="list"
+              />
+              {muscleSuggestions.length > 0 && (
+                <div className="absolute z-10 left-0 right-0 mt-1 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
+                  {muscleSuggestions.map(muscle => (
+                    <button
+                      key={muscle}
+                      type="button"
+                      onClick={() => setPickerMuscle(muscle)}
+                      className="block w-full text-left px-3 py-2 text-xs text-zinc-700 dark:text-zinc-200 hover:bg-orange-50 dark:hover:bg-orange-950/30"
+                    >
+                      {muscle}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-semibold text-zinc-500">
+                {filteredLibrary.length} exercícios encontrados
+              </span>
+              {pickerMuscle && (
+                <button type="button" onClick={() => setPickerMuscle('')} className="text-[11px] text-orange-600 font-bold">
+                  Limpar músculo
+                </button>
+              )}
+            </div>
+
             <div className="flex-1 overflow-y-auto space-y-2 pr-1">
               {filteredLibrary.map(ex => (
                 <div
                   key={ex.id}
-                  onClick={() => addExerciseFromPicker(ex.id)}
+                  onClick={() => {
+                    setSelectedExercise(ex);
+                    setShowPicker(false);
+                  }}
                   className="p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:bg-orange-50/60 dark:hover:bg-orange-950/30 hover:border-orange-200 cursor-pointer flex items-center justify-between transition-all"
                 >
                   <div className="flex items-center gap-2.5">
@@ -501,6 +621,13 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
           </div>
         </div>
       )}
+
+      <ExerciseModal
+        exercise={selectedExercise}
+        onClose={() => setSelectedExercise(null)}
+        onAddToCustom={exercise => addExerciseFromPicker(exercise.id)}
+        intervalSeconds={selectedExercise?.defaultDuration}
+      />
     </div>
   );
 };
