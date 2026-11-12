@@ -18,6 +18,7 @@ import { EXERCISES, EXERCISES_BY_ID } from '../../data/exercises';
 import { calculateWorkoutDuration, estimateCaloriesBurned, formatTime } from '../../utils/fitness';
 import { ExerciseModal } from '../ExerciseModal';
 import { useLanguage } from '../../i18n';
+import { AiGuidedWorkoutPanel } from '../AiGuidedWorkoutPanel';
 
 interface CustomBuilderViewProps {
   customWorkouts: Workout[];
@@ -190,6 +191,12 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
           </button>
         )}
       </div>
+
+      <AiGuidedWorkoutPanel
+        onSaveGeneratedWorkouts={(workouts) => {
+          workouts.forEach((workout) => onSaveCustomWorkout(workout));
+        }}
+      />
 
       {/* EDITING FORM */}
       {isEditing ? (

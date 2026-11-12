@@ -4,11 +4,11 @@ import { Exercise, Workout, WorkoutLog } from './types';
 import { PROGRAMS } from './data/programs';
 import { EXERCISES_BY_ID } from './data/exercises';
 import { ExerciseMedia } from './components/ExerciseMedia';
-import { WorkoutPlayer } from './components/WorkoutPlayer';
+import { TvWorkoutPlayer } from './components/TvWorkoutPlayer';
 import { LanguageProvider, useLanguage } from './i18n';
 
-const TV_WORKOUTS: Workout[] = PROGRAMS.flatMap(program =>
-  program.days
+const TV_WORKOUTS: Workout[] = PROGRAMS.reduce<Workout[]>((acc, program) => {
+  const items = program.days
     .filter(day => !day.isRestDay && day.exercises.length > 0)
     .slice(0, 2)
     .map(day => ({
@@ -19,14 +19,30 @@ const TV_WORKOUTS: Workout[] = PROGRAMS.flatMap(program =>
       difficulty: program.difficulty,
       estimatedMinutes: day.durationMinutes,
       exercises: day.exercises,
-    })),
-);
+    }));
+
+  return acc.concat(items);
+}, []);
 
 function TvContent() {
   const { language } = useLanguage();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const selectedWorkout = TV_WORKOUTS[selectedIndex];
+
+  if (TV_WORKOUTS.length === 0 || !selectedWorkout) {
+    return (
+      <main className="tv-shell tv-empty">
+        <div className="tv-empty-content">
+          <h1 className="tv-empty-title">HomeFit TV</h1>
+          <p className="tv-empty-subtitle">
+            {language === 'pt-BR' ? 'Nenhum treino disponivel para TV.' : 'No workouts available for TV mode.'}
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   const exercisePreviews = useMemo(
     () => selectedWorkout.exercises
@@ -43,20 +59,20 @@ function TvContent() {
 
   if (activeWorkout) {
     return (
-      <WorkoutPlayer
+      <TvWorkoutPlayer
         workout={activeWorkout}
-        soundEnabled
+        soundEnabled={soundEnabled}
         vibrationEnabled={false}
         onClose={() => setActiveWorkout(null)}
         onFinishWorkout={finishWorkout}
-        onToggleSound={() => undefined}
+        onToggleSound={() => setSoundEnabled(prev => !prev)}
       />
     );
   }
 
   return (
     <main
-      className="tv-shell min-h-screen bg-zinc-950 text-white p-10 lg:p-16"
+      className="tv-shell"
       tabIndex={0}
       onKeyDown={event => {
         if (event.key === 'ArrowLeft') moveSelection(-1);
@@ -64,69 +80,69 @@ function TvContent() {
         if (event.key === 'Enter' || event.key === ' ') setActiveWorkout(selectedWorkout);
       }}
     >
-      <header className="flex items-center justify-between max-w-[1500px] mx-auto">
+      <header className="tv-header">
         <div>
-          <div className="flex items-center gap-4">
-            <span className="text-5xl">🏠</span>
-            <h1 className="text-5xl font-black tracking-tight">
-              Home<span className="text-orange-500">Fit</span>
+          <div className="tv-brand-row">
+            <span className="tv-brand-emoji">🏠</span>
+            <h1 className="tv-brand-title">
+              Home<span className="tv-brand-accent">Fit</span>
             </h1>
           </div>
-          <p className="mt-3 text-xl text-zinc-400">Treinos em casa na sua TV</p>
+          <p className="tv-brand-subtitle">Treinos em casa na sua TV</p>
         </div>
-        <div className="flex items-center gap-3 text-zinc-400 text-lg">
-          <MonitorPlay className="w-7 h-7 text-orange-500" />
+        <div className="tv-mode-pill">
+          <MonitorPlay size={28} />
           <span>{language === 'pt-BR' ? 'Modo TV' : 'TV mode'}</span>
         </div>
       </header>
 
-      <section className="max-w-[1500px] mx-auto mt-14 grid grid-cols-[1.15fr_0.85fr] gap-12 items-stretch">
-        <div className="rounded-[2rem] border border-zinc-800 bg-zinc-900/80 p-10 shadow-2xl">
-          <span className="text-lg font-bold uppercase tracking-[0.25em] text-orange-400">
+      <section className="tv-grid">
+        <div className="tv-panel tv-main-panel">
+          <span className="tv-kicker">
             Workout selecionado
           </span>
-          <h2 className="mt-5 text-6xl font-black leading-tight">{selectedWorkout.title}</h2>
-          <p className="mt-5 max-w-2xl text-2xl leading-relaxed text-zinc-300">{selectedWorkout.description}</p>
+          <h2 className="tv-workout-title">{selectedWorkout.title}</h2>
+          <p className="tv-workout-description">{selectedWorkout.description}</p>
 
-          <div className="mt-8 flex gap-4 text-lg text-zinc-300">
-            <span className="rounded-xl bg-zinc-800 px-5 py-3">{selectedWorkout.estimatedMinutes} min</span>
-            <span className="rounded-xl bg-zinc-800 px-5 py-3">{selectedWorkout.difficulty}</span>
-            <span className="rounded-xl bg-zinc-800 px-5 py-3">{exercisePreviews.length} exercícios</span>
+          <div className="tv-meta-row">
+            <span className="tv-chip">{selectedWorkout.estimatedMinutes} min</span>
+            <span className="tv-chip">{selectedWorkout.difficulty}</span>
+            <span className="tv-chip">{exercisePreviews.length} exercícios</span>
           </div>
 
           <button
             type="button"
             autoFocus
             onClick={() => setActiveWorkout(selectedWorkout)}
-            className="mt-12 flex items-center gap-4 rounded-2xl bg-orange-600 px-8 py-5 text-2xl font-black shadow-lg shadow-orange-600/30 focus:outline-none focus:ring-4 focus:ring-orange-300"
+            className="tv-start-button"
           >
-            <Play className="h-8 w-8 fill-current" />
+            <Play size={30} />
             Iniciar treino
           </button>
         </div>
 
-        <div className="rounded-[2rem] border border-zinc-800 bg-zinc-900/80 p-8">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-black">Exercícios</h3>
-            <div className="flex gap-2">
-              <button type="button" onClick={() => moveSelection(-1)} aria-label="Treino anterior" className="rounded-xl bg-zinc-800 p-3 focus:ring-4 focus:ring-orange-300">
-                <ChevronLeft className="h-7 w-7" />
+        <div className="tv-panel tv-list-panel">
+          <div className="tv-list-header">
+            <h3 className="tv-list-title">Exercícios</h3>
+            <div className="tv-nav-buttons">
+              <button type="button" onClick={() => moveSelection(-1)} aria-label="Treino anterior" className="tv-icon-button">
+                <ChevronLeft size={28} />
               </button>
-              <button type="button" onClick={() => moveSelection(1)} aria-label="Próximo treino" className="rounded-xl bg-zinc-800 p-3 focus:ring-4 focus:ring-orange-300">
-                <ChevronRight className="h-7 w-7" />
+              <button type="button" onClick={() => moveSelection(1)} aria-label="Próximo treino" className="tv-icon-button">
+                <ChevronRight size={28} />
               </button>
             </div>
           </div>
-          <div className="mt-6 space-y-4">
+          <div className="tv-exercise-list">
             {exercisePreviews.map((exercise, index) => (
-              <div key={exercise.id} className="flex items-center gap-5 rounded-2xl bg-zinc-800/70 p-4">
-                <span className="text-3xl">{exercise.icon}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xl font-bold">{index + 1}. {exercise.name}</p>
-                  <p className="mt-1 truncate text-base text-zinc-400">{exercise.targetMuscles.slice(0, 3).join(' · ')}</p>
+              <div key={exercise.id} className="tv-exercise-row">
+                <span className="tv-exercise-icon">{exercise.icon}</span>
+                <div className="tv-exercise-text">
+                  <p className="tv-exercise-name">{index + 1}. {exercise.name}</p>
+                  <p className="tv-exercise-muscles">{exercise.targetMuscles.slice(0, 3).join(' · ')}</p>
                 </div>
                 {exercise.freeExercise && (
-                  <ExerciseMedia media={exercise.freeExercise} compact className="h-20 w-32 shrink-0" />
+                  <ExerciseMedia media={exercise.freeExercise} compact className="tv-exercise-media" />
                 )}
               </div>
             ))}
@@ -134,7 +150,7 @@ function TvContent() {
         </div>
       </section>
 
-      <footer className="mx-auto mt-10 flex max-w-[1500px] justify-between text-lg text-zinc-500">
+      <footer className="tv-footer">
         <span>Use ◀ ▶ para trocar o treino · OK/Enter para iniciar</span>
         <span>{selectedIndex + 1} / {TV_WORKOUTS.length}</span>
       </footer>

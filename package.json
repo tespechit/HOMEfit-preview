@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
-    "build:webos": "VITE_TV_MODE=1 vite build && rm -rf dist-webos && mkdir -p dist-webos && cp -R dist/. dist-webos/ && cp webos/appinfo.json webos/icon.svg dist-webos/",
+    "build:webos": "VITE_TV_MODE=1 vite build && rm -rf dist-webos && mkdir -p dist-webos && cp -R dist/. dist-webos/ && cp webos/appinfo.json webos/icon.svg webos/icon.png dist-webos/",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
@@ -32,6 +32,7 @@
     "@types/node": "^22.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-legacy": "^8.2.4",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.3.3",

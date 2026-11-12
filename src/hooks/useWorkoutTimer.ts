@@ -44,39 +44,45 @@ export function useWorkoutTimer({
       ? (currentExerciseItem?.workSec || 30)
       : (currentExerciseItem?.restSec || 15);
 
-  const handleNext = useCallback(() => {
+  const advancePhase = useCallback(() => {
     if (phase === 'warmup') {
-      // Transition from warmup into first exercise WORK
       setPhase('work');
       setTimeRemaining(exercises[0]?.workSec || 30);
       if (soundRef.current) playTransitionBeep(true);
       if (vibrationRef.current) triggerVibration([200]);
-    } else if (phase === 'work') {
-      // If there are more exercises and restSec > 0, go to rest
+      return;
+    }
+
+    if (phase === 'work') {
       if (currentIndex < exercises.length - 1 && (currentExerciseItem?.restSec || 0) > 0) {
         setPhase('rest');
         setTimeRemaining(currentExerciseItem?.restSec || 15);
         if (soundRef.current) playTransitionBeep(false);
         if (vibrationRef.current) triggerVibration([100, 50, 100]);
-      } else if (currentIndex < exercises.length - 1) {
-        // No rest interval, jump straight to next work
-        setCurrentIndex(prev => prev + 1);
+        return;
+      }
+
+      if (currentIndex < exercises.length - 1) {
+        const nextIdx = currentIndex + 1;
+        setCurrentIndex(nextIdx);
         setPhase('work');
-        setTimeRemaining(exercises[currentIndex + 1]?.workSec || 30);
+        setTimeRemaining(exercises[nextIdx]?.workSec || 30);
         if (soundRef.current) playTransitionBeep(true);
         if (vibrationRef.current) triggerVibration([200]);
-      } else {
-        // Workout complete!
-        setPhase('completed');
-        setTimeRemaining(0);
-        if (soundRef.current) playFanfare();
-        if (vibrationRef.current) triggerVibration([200, 100, 200, 100, 400]);
-        if (onCompleteRef.current) {
-          onCompleteRef.current(totalElapsedSec, exercises.length);
-        }
+        return;
       }
-    } else if (phase === 'rest') {
-      // Transition from rest to next exercise WORK
+
+      setPhase('completed');
+      setTimeRemaining(0);
+      if (soundRef.current) playFanfare();
+      if (vibrationRef.current) triggerVibration([200, 100, 200, 100, 400]);
+      if (onCompleteRef.current) {
+        onCompleteRef.current(totalElapsedSec, exercises.length);
+      }
+      return;
+    }
+
+    if (phase === 'rest') {
       const nextIdx = currentIndex + 1;
       if (nextIdx < exercises.length) {
         setCurrentIndex(nextIdx);
@@ -93,7 +99,11 @@ export function useWorkoutTimer({
         }
       }
     }
-  }, [phase, currentIndex, exercises, currentExerciseItem, totalElapsedSec]);
+  }, [phase, currentIndex, currentExerciseItem, exercises, totalElapsedSec]);
+
+  const handleNext = useCallback(() => {
+    advancePhase();
+  }, [advancePhase]);
 
   const handlePrevious = useCallback(() => {
     if (phase === 'rest') {
@@ -143,17 +153,19 @@ export function useWorkoutTimer({
           playCountdownBeep(prevTime === 2 ? 500 : 440);
         }
 
-        if (prevTime <= 1) {
-          // Trigger next phase on next tick
-          handleNext();
-          return 0;
-        }
-        return prevTime - 1;
+        return prevTime <= 1 ? 0 : prevTime - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [phase, isPaused, exercises.length, handleNext]);
+  }, [phase, isPaused, exercises.length]);
+
+  useEffect(() => {
+    if (phase === 'completed' || isPaused || exercises.length === 0) return;
+    if (timeRemaining === 0) {
+      advancePhase();
+    }
+  }, [timeRemaining, phase, isPaused, exercises.length, advancePhase]);
 
   return {
     phase,

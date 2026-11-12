@@ -1,12 +1,13 @@
 {
   "id": "com.tespechit.homefit.tv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "web",
   "title": "HomeFit TV",
   "main": "index.html",
-  "icon": "icon.svg",
-  "largeIcon": "icon.svg",
+  "icon": "icon.png",
+  "largeIcon": "icon.png",
   "vendor": "tespechit",
   "resolution": "1920x1080",
-  "uiRevision": 2
+  "uiRevision": 2,
+  "requiredACG": []
 }
