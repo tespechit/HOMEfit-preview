@@ -79,6 +79,7 @@ export const getFreeExerciseMedia = (exercise: Exercise): FreeExerciseMedia | un
 export const classifyFreeExercise = (record: FreeExerciseRecord): {
   exerciseType: 'Aerobic' | 'Strength' | 'Stretching';
   exerciseRegion: 'Full Body' | 'Upper Front' | 'Upper Back' | 'Lower Body' | 'Abdomen' | 'Glutes';
+  equipmentUse: 'None' | 'Improvised' | 'Gym';
 } => {
   const text = `${record.name} ${record.target} ${record.bodyPart}`.toLowerCase();
   const exerciseType = record.bodyPart === 'cardio' || /jump|run|burpee|high knee|jack|mountain climber|skater|shuffle|kick|boxing/.test(text)
@@ -97,5 +98,10 @@ export const classifyFreeExercise = (record: FreeExerciseRecord): {
           : /back|lat|erector|trapezius|tricep/.test(text)
             ? 'Upper Back'
             : 'Upper Front';
-  return { exerciseType, exerciseRegion };
+  const equipmentUse = record.equipment === 'body weight'
+    ? 'None'
+    : /chair|wall|stability ball|band|rope|kettlebell/.test(record.equipment)
+      ? 'Improvised'
+      : 'Gym';
+  return { exerciseType, exerciseRegion, equipmentUse };
 };

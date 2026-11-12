@@ -22,12 +22,57 @@ const translations = {
   },
 } as const;
 
+const textTranslations: Record<string, string> = {
+  'Custom Workout Builder': 'Montar treino personalizado',
+  'Create, customize, and save your own routines.': 'Crie, personalize e salve suas rotinas.',
+  'Create New': 'Criar novo',
+  'Workout Title': 'Título do treino',
+  'Short Description / Goal': 'Descrição curta / objetivo',
+  'Exercises': 'Exercícios',
+  'Est. Duration': 'Duração estimada',
+  'Est. Burn': 'Gasto estimado',
+  'Workout Sequence': 'Sequência do treino',
+  'Add Exercise': 'Adicionar exercício',
+  'No exercises added yet. Tap "Add Exercise" to select from the library!': 'Nenhum exercício adicionado. Toque em "Adicionar exercício" para escolher na biblioteca.',
+  'Work Interval': 'Intervalo de trabalho',
+  'Rest Interval': 'Intervalo de descanso',
+  'Save Routine': 'Salvar rotina',
+  'Cancel': 'Cancelar',
+  'Pick Exercise to Add': 'Escolha o exercício para adicionar',
+  'Type of exercise': 'Tipo de exercício',
+  'Equipment use': 'Uso de equipamentos',
+  'Worked region': 'Região trabalhada',
+  'Close details': 'Fechar detalhes',
+  'Difficulty': 'Dificuldade',
+  'Equipment': 'Equipamento',
+  'Target Muscles': 'Músculos trabalhados',
+  'Step-by-Step Instructions': 'Instruções passo a passo',
+  'Common Mistakes to Avoid': 'Erros comuns a evitar',
+  'Form Cues': 'Dicas de execução',
+  'Breathing': 'Respiração',
+  'Coach Pro Tip': 'Dica do treinador',
+  'Ready-Made Programs': 'Programas prontos',
+  'Exercise Library': 'Biblioteca de exercícios',
+  Enrolled: 'Inscrito',
+  'Enroll in This Program': 'Inscrever-se neste programa',
+  'Program Schedule & Workouts': 'Agenda e treinos do programa',
+  Start: 'Iniciar',
+  'Add to Custom': 'Adicionar ao personalizado',
+  'Start Quick Exercise': 'Iniciar exercício rápido',
+  'Current Exercise': 'Exercício atual',
+  'Next Exercise': 'Próximo exercício',
+  'First Exercise': 'Primeiro exercício',
+  'Get into position': 'Prepare-se para começar',
+  'Focus on controlled form': 'Concentre-se em uma execução controlada',
+};
+
 type TranslationKey = keyof typeof translations.en;
 
 interface LanguageContextValue {
   language: Language;
   setLanguage: (language: Language) => void;
   t: (key: TranslationKey) => string;
+  tx: (text: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
@@ -38,6 +83,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     language,
     setLanguage,
     t: (key: TranslationKey) => translations[language][key],
+    tx: (text: string) => language === 'pt-BR' ? (textTranslations[text] || text) : text,
   }), [language, setLanguage]);
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

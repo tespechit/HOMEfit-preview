@@ -32,7 +32,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
   onDeleteCustomWorkout,
   onStartWorkout,
 }) => {
-  const { t } = useLanguage();
+  const { t, tx } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -50,6 +50,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
   const [pickerSearch, setPickerSearch] = useState('');
   const [pickerType, setPickerType] = useState('Todos');
   const [pickerRegion, setPickerRegion] = useState('Todas');
+  const [pickerEquipment, setPickerEquipment] = useState('Todos');
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
 
   const handleOpenNew = () => {
@@ -135,6 +136,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
     'Todas',
     ...Array.from(new Set(pickerTypeExercises.map(ex => ex.exerciseRegion))).filter(Boolean).sort(),
   ];
+  const pickerEquipmentOptions = ['Todos', 'None', 'Improvised', 'Gym'];
   const regionLabels: Record<string, string> = {
     Todas: 'Todas as regiões',
     'Full Body': 'Todo o corpo',
@@ -160,7 +162,8 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
     ].filter(Boolean).join(' ').toLowerCase();
     return (
       searchable.includes(search) &&
-      (pickerRegion === 'Todas' || ex.exerciseRegion === pickerRegion)
+      (pickerRegion === 'Todas' || ex.exerciseRegion === pickerRegion) &&
+      (pickerEquipment === 'Todos' || ex.equipmentUse === pickerEquipment)
     );
   });
 
@@ -170,10 +173,10 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-black text-zinc-900 dark:text-white">
-            Custom Workout Builder
+            {tx('Custom Workout Builder')}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Create, customize, and save your own routines.
+            {tx('Create, customize, and save your own routines.')}
           </p>
         </div>
 
@@ -183,7 +186,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
             className="py-2 px-4 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-orange-600/25 active:scale-95 transition-all"
           >
             <Plus className="w-4 h-4" />
-            <span>Create New</span>
+            <span>{tx('Create New')}</span>
           </button>
         )}
       </div>
@@ -207,7 +210,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
           <div className="space-y-3">
             <div>
               <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 block mb-1">
-                Workout Title
+                {tx('Workout Title')}
               </label>
               <input
                 type="text"
@@ -220,7 +223,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
 
             <div>
               <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 block mb-1">
-                Short Description / Goal
+                {tx('Short Description / Goal')}
               </label>
               <input
                 type="text"
@@ -236,19 +239,19 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
           <div className="grid grid-cols-3 gap-2.5 p-3 rounded-2xl bg-orange-50/60 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-900/40 text-center">
             <div>
               <span className="text-[10px] uppercase font-bold text-orange-700 dark:text-orange-300">
-                Exercises
+                {tx('Exercises')}
               </span>
               <p className="text-sm font-black text-orange-900 dark:text-orange-200">{items.length}</p>
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-orange-700 dark:text-orange-300">
-                Est. Duration
+                {tx('Est. Duration')}
               </span>
               <p className="text-sm font-black text-orange-900 dark:text-orange-200">{formatTime(estDurationSec)}</p>
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-orange-700 dark:text-orange-300">
-                Est. Burn
+                {tx('Est. Burn')}
               </span>
               <p className="text-sm font-black text-orange-900 dark:text-orange-200">~{estCalories} kcal</p>
             </div>
@@ -258,7 +261,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-                Workout Sequence ({items.length})
+                {tx('Workout Sequence')} ({items.length})
               </h4>
               <button
                 type="button"
@@ -266,18 +269,19 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
                   setPickerSearch('');
                   setPickerType('Todos');
                   setPickerRegion('Todas');
+                  setPickerEquipment('Todos');
                   setShowPicker(true);
                 }}
                 className="py-1 px-3 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 text-xs font-bold hover:bg-orange-200 dark:hover:bg-orange-900 flex items-center gap-1"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Exercise</span>
+                <span>{tx('Add Exercise')}</span>
               </button>
             </div>
 
             {items.length === 0 ? (
               <div className="p-6 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center text-xs text-zinc-600 dark:text-zinc-300">
-                No exercises added yet. Tap "Add Exercise" to select from the library!
+                {tx('No exercises added yet. Tap "Add Exercise" to select from the library!')}
               </div>
             ) : (
               <div className="space-y-2.5">
@@ -333,7 +337,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
                       <div className="grid grid-cols-2 gap-3 pt-1">
                         <div>
                           <div className="flex justify-between text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 mb-1">
-                            <span>Work Interval</span>
+                            <span>{tx('Work Interval')}</span>
                             <span className="text-orange-600 dark:text-orange-400 font-bold">{item.workSec}s</span>
                           </div>
                           <input
@@ -349,7 +353,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
 
                         <div>
                           <div className="flex justify-between text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 mb-1">
-                            <span>Rest Interval</span>
+                            <span>{tx('Rest Interval')}</span>
                             <span className="text-cyan-600 dark:text-cyan-400 font-bold">{item.restSec}s</span>
                           </div>
                           <input
@@ -377,7 +381,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
               onClick={() => setIsEditing(false)}
               className="flex-1 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100"
             >
-              Cancel
+              {tx('Cancel')}
             </button>
             <button
               type="button"
@@ -386,7 +390,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
               className="flex-1 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-orange-600/30 flex items-center justify-center gap-1.5"
             >
               <Check className="w-4 h-4 stroke-[3]" />
-              <span>Save Routine</span>
+              <span>{tx('Save Routine')}</span>
             </button>
           </div>
         </div>
@@ -493,7 +497,7 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
           <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-5 max-h-[85vh] flex flex-col shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
               <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
-                Pick Exercise to Add
+                {tx('Pick Exercise to Add')}
               </h3>
               <button
                 onClick={() => setShowPicker(false)}
@@ -514,9 +518,9 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                Tipo de exercício
+                {tx('Type of exercise')}
                 <select
                   value={pickerType}
                   onChange={e => {
@@ -529,14 +533,28 @@ export const CustomBuilderView: React.FC<CustomBuilderViewProps> = ({
                 </select>
               </label>
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                Região trabalhada
+                {tx('Equipment use')}
+                <select
+                  value={pickerEquipment}
+                  onChange={e => setPickerEquipment(e.target.value)}
+                  className="mt-1 w-full rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100"
+                >
+                  {pickerEquipmentOptions.map(option => (
+                    <option key={option} value={option}>
+                      {option === 'Todos' ? 'Todos' : option === 'None' ? 'Não' : option === 'Improvised' ? 'Improvisados' : 'Academia'}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                {tx('Worked region')}
                 <select
                   value={pickerRegion}
                   onChange={e => setPickerRegion(e.target.value)}
                   className="mt-1 w-full rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100"
                 >
                   {pickerRegions.map(region => (
-                    <option key={region} value={region}>{regionLabels[region] || region}</option>
+                    <option key={region} value={region}>{regionLabels[region || ''] || region}</option>
                   ))}
                 </select>
               </label>

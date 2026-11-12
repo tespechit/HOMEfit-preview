@@ -3,6 +3,7 @@ import { Search, Filter, Play, CheckCircle, Calendar, Dumbbell, Info, Sparkles }
 import { Exercise, Program, Workout, ActiveProgramState, ExerciseCategory } from '../../types';
 import { EXERCISES, CATEGORIES } from '../../data/exercises';
 import { PROGRAMS } from '../../data/programs';
+import { useLanguage } from '../../i18n';
 
 interface WorkoutsViewProps {
   activeProgram: ActiveProgramState | null;
@@ -20,6 +21,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
   onEnrollProgram,
   onSelectProgramDay,
 }) => {
+  const { tx } = useLanguage();
   const [subTab, setSubTab] = useState<'programs' | 'library'>('programs');
 
   // Exercise Library Filters
@@ -58,7 +60,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
               : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900'
           }`}
         >
-          Ready-Made Programs ({PROGRAMS.length})
+          {tx('Ready-Made Programs')} ({PROGRAMS.length})
         </button>
         <button
           onClick={() => setSubTab('library')}
@@ -68,7 +70,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
               : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900'
           }`}
         >
-          Exercise Library ({EXERCISES.length})
+          {tx('Exercise Library')} ({EXERCISES.length})
         </button>
       </div>
 
@@ -98,7 +100,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
                     {isEnrolled && (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                         <CheckCircle className="w-3 h-3" />
-                        Enrolled
+                        {tx('Enrolled')}
                       </span>
                     )}
                   </div>
@@ -140,7 +142,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
                     onClick={() => onEnrollProgram(currentProgram.id)}
                     className="w-full sm:w-auto py-2 px-4 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-xs transition-all active:scale-95"
                   >
-                    Enroll in This Program
+                    {tx('Enroll in This Program')}
                   </button>
                 )}
               </div>
@@ -149,7 +151,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
             {/* Days list */}
             <div className="space-y-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-                Program Schedule & Workouts
+                {tx('Program Schedule & Workouts')}
               </h4>
 
               <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
@@ -212,7 +214,7 @@ export const WorkoutsView: React.FC<WorkoutsViewProps> = ({
                             className="py-1.5 px-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 transition-all"
                           >
                             <Play className="w-3.5 h-3.5 fill-current" />
-                            <span>Start</span>
+                            <span>{tx('Start')}</span>
                           </button>
                         )}
                       </div>

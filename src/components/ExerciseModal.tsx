@@ -3,6 +3,7 @@ import { X, Play, AlertCircle, CheckCircle2, Lightbulb, Dumbbell } from 'lucide-
 import { Exercise } from '../types';
 import { ExerciseIllustration } from './ExerciseIllustration';
 import { ExerciseMedia } from './ExerciseMedia';
+import { useLanguage } from '../i18n';
 
 interface ExerciseModalProps {
   exercise: Exercise | null;
@@ -19,6 +20,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   onAddToCustom,
   intervalSeconds,
 }) => {
+  const { tx } = useLanguage();
   if (!exercise) return null;
 
   return (
@@ -48,7 +50,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            aria-label="Close details"
+            aria-label={tx('Close details')}
             className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -77,11 +79,11 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           {/* Quick specs pills */}
           <div className="grid grid-cols-3 gap-2">
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
-              <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">Difficulty</span>
+              <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">{tx('Difficulty')}</span>
               <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{exercise.difficulty}</p>
             </div>
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
-              <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">Equipment</span>
+              <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 uppercase">{tx('Equipment')}</span>
               <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{exercise.equipment}</p>
             </div>
             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 text-center">
@@ -104,7 +106,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           {/* Target muscles */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 mb-2">
-              Target Muscles
+            {tx('Target Muscles')}
             </h3>
             <div className="flex flex-wrap gap-1.5">
               {exercise.targetMuscles.map(muscle => (
@@ -122,7 +124,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 mb-2.5 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              Step-by-Step Instructions
+              {tx('Step-by-Step Instructions')}
             </h3>
             <ol className="space-y-2">
               {exercise.instructions.map((step, idx) => (
@@ -141,7 +143,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200">
               <h3 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 mb-2 text-amber-700 dark:text-amber-400">
                 <AlertCircle className="w-4 h-4" />
-                Common Mistakes to Avoid
+                {tx('Common Mistakes to Avoid')}
               </h3>
               <ul className="space-y-1.5 text-xs">
                 {exercise.commonMistakes.map((mistake, idx) => (
@@ -157,7 +159,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           {exercise.freeExercise?.formCues.length ? (
             <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-900 dark:text-blue-200">
               <h3 className="text-xs font-bold uppercase tracking-wider mb-2 text-blue-700 dark:text-blue-400">
-                Form Cues
+                {tx('Form Cues')}
               </h3>
               <ul className="space-y-1.5 text-xs">
                 {exercise.freeExercise.formCues.map(cue => (
@@ -173,7 +175,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           {exercise.freeExercise?.breathing && (
             <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-900 dark:text-cyan-200">
               <h3 className="text-xs font-bold uppercase tracking-wider mb-1 text-cyan-700 dark:text-cyan-400">
-                Breathing
+                {tx('Breathing')}
               </h3>
               <p className="text-xs leading-relaxed">{exercise.freeExercise.breathing}</p>
             </div>
@@ -184,7 +186,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 dark:text-emerald-200">
               <h3 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1 text-emerald-700 dark:text-emerald-400">
                 <Lightbulb className="w-4 h-4" />
-                Coach Pro Tip
+                {tx('Coach Pro Tip')}
               </h3>
               <p className="text-xs leading-relaxed">{exercise.proTip}</p>
             </div>
@@ -202,7 +204,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               className="flex-1 py-3 px-4 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold text-xs text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1.5"
             >
               <Dumbbell className="w-4 h-4" />
-              Add to Custom
+              {tx('Add to Custom')}
             </button>
           )}
 
@@ -215,7 +217,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               className="flex-1 py-3 px-4 rounded-xl bg-orange-600 hover:bg-orange-500 active:scale-98 font-bold text-xs text-white shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-1.5"
             >
               <Play className="w-4 h-4 fill-current" />
-              Start Quick Exercise
+              {tx('Start Quick Exercise')}
             </button>
           )}
         </div>

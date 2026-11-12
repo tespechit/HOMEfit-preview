@@ -9,6 +9,7 @@ export type ExerciseCategory =
 export type DifficultyLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export type EquipmentType = 'None' | 'Dumbbells' | 'Resistance Bands' | 'Chair/Wall';
+export type EquipmentUse = 'None' | 'Improvised' | 'Gym';
 
 export interface FreeExerciseMedia {
   id: string;
@@ -53,6 +54,7 @@ export interface Exercise {
   freeExercise?: FreeExerciseMedia;
   exerciseType?: 'Aerobic' | 'Strength' | 'Stretching';
   exerciseRegion?: 'Full Body' | 'Upper Front' | 'Upper Back' | 'Lower Body' | 'Abdomen' | 'Glutes';
+  equipmentUse?: EquipmentUse;
 }
 
 export interface WorkoutExerciseItem {

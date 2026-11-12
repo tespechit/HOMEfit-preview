@@ -1183,12 +1183,16 @@ EXERCISES.forEach(exercise => {
     const classification = classifyFreeExercise(record);
     exercise.exerciseType = classification.exerciseType;
     exercise.exerciseRegion = classification.exerciseRegion;
+    exercise.equipmentUse = classification.equipmentUse;
   }
   if (exercise.freeExercise?.steps.length) {
     exercise.instructions = exercise.freeExercise.steps;
   }
   if (exercise.freeExercise?.secondaryMuscles.length) {
     exercise.targetMuscles = [...new Set([...exercise.targetMuscles, ...exercise.freeExercise.secondaryMuscles])];
+  }
+  if (!exercise.equipmentUse) {
+    exercise.equipmentUse = exercise.equipment === 'None' ? 'None' : 'Improvised';
   }
 });
 
@@ -1204,7 +1208,7 @@ const equipmentType = (equipment: string): Exercise['equipment'] =>
 const generatedExercises: Exercise[] = FREE_EXERCISES
   .filter(record => !existingSourceIds.has(record.id))
   .map(record => {
-    const { exerciseType, exerciseRegion } = classifyFreeExercise(record);
+    const { exerciseType, exerciseRegion, equipmentUse } = classifyFreeExercise(record);
     const category: Exercise['category'] =
       exerciseType === 'Aerobic' ? 'Cardio/HIIT' :
         exerciseType === 'Stretching' ? 'Stretching/Yoga' :
@@ -1246,6 +1250,7 @@ const generatedExercises: Exercise[] = FREE_EXERCISES
       freeExercise: media,
       exerciseType,
       exerciseRegion,
+      equipmentUse,
     };
   });
 
